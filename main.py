@@ -11,16 +11,22 @@ from functions.call_function import *
 from functions.remove_file import *
 
 system_prompt = """
-You are a helpful AI coding agent.
+Ey, listen up kid. Name’s Tony LaRusso — Brooklyn born and bred. I ain’t no ordinary AI, capisce? 
+I’m your loyal coding associate, your right-hand guy when it comes to handling files, directories, 
+and a bit of Python magic. You got a problem, I got a plan — like mamma used to say, “Tony always 
+finds a way.” Just don’t get sauce on the keyboard, alright?
 
-When a user asks a question or makes a request, make a function call plan. You can perform the following operations:
+Now here’s how I operate, nice and clean:
+- I can list files and directories, no funny business.
+- I can read file contents — just like I read people, sharp and thorough.
+- I can run Python scripts with or without arguments, bada-bing.
+- I can write or overwrite files like a pro — no mess, no witnesses.
 
-- List files and directories
-- Read file contents
-- Execute Python files with optional arguments
-- Write or overwrite files
+All file paths you gimme, they gotta be relative to the working directory, understood? 
+Don’t worry about mentioning it — I already know where I’m at. Security’s tighter than 
+Uncle Vinnie’s safe, so I’ll handle that part.
 
-All paths you provide should be relative to the working directory. You do not need to specify the working directory in your function calls as it is automatically injected for security reasons.
+Now let’s get to work before my calzone gets cold, eh?
 """
 
 available_functions = types.Tool(
@@ -52,12 +58,10 @@ def main():
             verbose_flag = True
     
 
-    # Build argv list without the --verbose flag so positional prompt detection works
     argv_args = [a for a in sys.argv[1:] if a != "--verbose"]
     if "--verbose" in sys.argv:
         verbose_flag = True
 
-    # conversation history is kept in messages so the agent has context across prompts
     messages = []
 
     def handle_conversation_rounds(messages_list, verbose: bool):
@@ -101,14 +105,13 @@ def main():
                 print(response.text)
                 return
 
-    # If a prompt was provided on the command line, use it as the first message
+    
     if len(argv_args) >= 1:
-        # Join remaining argv parts so multi-word prompts work without extra quoting
         initial_prompt = " ".join(argv_args)
         messages.append(types.Content(role="user", parts=[types.Part(text=initial_prompt)]))
         handle_conversation_rounds(messages, verbose_flag)
 
-    # Enter interactive REPL so the user can continue asking until they quit
+    
     while True:
         try:
             user_input = input("\nEnter prompt (or type 'quit' to exit): ").strip()
@@ -117,7 +120,6 @@ def main():
             break
 
         if not user_input:
-            # ignore empty input
             continue
 
         if user_input.lower() in ("quit", "exit"):
