@@ -5,7 +5,7 @@ from .get_files_info import *
 from .get_file_contents import *
 from .run_python_file import *
 from .write_file import *
-
+from .remove_file import *
 
 def call_function(function_call_part, verbose=False):
 	result = ""
@@ -22,6 +22,8 @@ def call_function(function_call_part, verbose=False):
                                 result = write_file(WORKING_DIR, **function_call_part.args)
 			elif function_call_part.name == "run_python_file":
                                 result = run_python_file(WORKING_DIR, **function_call_part.args)
+			elif function_call_part.name == "remove_file":
+				result = remove_file(WORKING_DIR, **function_call_part.args)
 			else:
 				return types.Content(
 					role="tool",
